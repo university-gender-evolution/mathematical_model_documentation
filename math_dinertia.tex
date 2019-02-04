@@ -1,0 +1,353 @@
+
+\documentclass[12pt, a4paper, oneside, headinclude, footinclude,english]{article}
+
+\input{/home/krishnab/Dropbox/backup/templates/latex/math_notes/structure.tex}
+\input{/home/krishnab/Dropbox/backup/templates/latex/math_macros/math_macros.tex}
+\title{\normalfont\spacedallcaps{Mathematical Model for Demographic Inertia in
+    Faculty Hiring}}
+
+\author{\spacedlowsmallcaps{Krishna Bhogaonker}} 
+ 
+\date{\today\\version 0.1}
+\makeatletter
+%\providecommand{\@nil}
+\makeatother
+
+
+\begin{document}
+
+\renewcommand{\sectionmark}[1]{\markright{\spacedlowsmallcaps{#1}}} 
+\lehead{\mbox{\llap{\small\thepage\kern1em\color{halfgray} \vline}\color{halfgray}\hspace{0.5em}\rightmark\hfil}} 
+
+
+
+\pagestyle{scrheadings} 
+
+%----------------------------------------------------------------------------------------
+%	TABLE OF CONTENTS & LISTS OF FIGURES AND TABLES
+%----------------------------------------------------------------------------------------
+
+\maketitle 
+
+\setcounter{tocdepth}{3}
+
+\tableofcontents 
+
+% \listoffigures 
+
+% \listoftables
+
+%----------------------------------------------------------------------------------------
+%	ABSTRACT
+%----------------------------------------------------------------------------------------
+
+\section*{Abstract}
+
+The past few decades have witnessed substantial improvements in the gender
+diversity of newly minted Ph.Ds from top universities. At the same time, the
+gender diversity of the faculty in these same universities has not changed to
+reflect this change in candidate supply. The model developed below examines the
+change in faculty gender diversity over time, given as set of initial conditions
+and model parameters. 
+%----------------------------------------------------------------------------------------
+%	AUTHOR AFFILIATIONS
+%----------------------------------------------------------------------------------------
+
+%\let\thefootnote\relax\footnotetext{* \textit{}}
+
+%\let\thefootnote\relax\footnotetext{\textsuperscript{1} \textit{}}
+
+%----------------------------------------------------------------------------------------
+
+% \newpage 
+
+%----------------------------------------------------------------------------------------
+%	INTRODUCTION
+%----------------------------------------------------------------------------------------
+
+\section{Notation}
+\label{sec:notation}
+
+This is a list of some of the mathematical notation used in the equations below. 
+
+\begin{table}[H]
+\centering
+\begin{tabular}{|c|l|c|l|}
+\hline
+ \multicolumn{1}{|c|}{\textbf{Variable}} & \multicolumn{1}{|c|}{\textbf{Description}} & \multicolumn{1}{|c|}{\textbf{Range}} \\ \hline
+ $R$ & the set of professor ranks: Assistant, Associate, Full & $\{1,2,3\}$ \\ \hline
+ $r$ & rank of a particular group of professors & $r \in R$   \\ \hline
+ $N$ & total number of professors in the department & $N \in \zp$   \\ \hline
+  $n^r$ & number of professors at a given rank & $n^r \in \zp$   \\ \hline
+  $G$ & the set of professor genders & $\{m, f\}$ \\ \hline
+  $g$ & the gender of a particular professor & $g \in G$ \\ \hline
+  $q^r$ & target percentage of professors at rank $r$ & $q^r \in [0,1]$  \\ \hline
+  $T^N$ & target number of the size of the department & $T^N \in \zp$  \\ \hline
+ $v^{r}$ & number of vacancies at rank $r$ & $v^r \in \zp$  \\ \hline
+ $v^N$ & total number of vacancies in the department & $v^N \in \zp$  \\ \hline
+ $h^{r}_{g}$ & number of professors hired at rank $r$ and gender $g$ & $h^{r}_{g} \in \zp$ \\ \hline
+ $s$ & yearly growth rate for the department & $\{s \in R | -1 \leq s \leq 1\}$ \\ \hline
+\end{tabular}
+\end{table}
+
+
+\section{Gender Diversity Evolution Model}
+\label{sec:genduniv-model}
+
+In the next two sections we lay out the structure and dynamics of the
+demographic inertia model for gender balance in academic faculty. In the first
+section we describe the organization and actors in an academic department. Based
+upon this organization we outline the evaluation metric to study the
+department's gender balance. In the second section we define the dynamics of the
+model, namely the way that faculty join and enter the department on a year by
+year basis. As we simulate faculty turnover, we evaluate the evolution of gender
+balance using our evaluation metric. 
+
+\subsection{Academic Department Composition and Structure}
+\label{sec:dept-structure}
+
+An academic department is composed of both male and female faculty that teach
+and conduct research in a specific discipline. Each professor has a rank
+contingent on his/her position within the department's status ladder. The most junior rank
+is the Assistant professor who is a tenure-track candidate, but who has not yet
+achieved tenure. In most cases tenure takes about 6 years from the initial hire
+date of the professor. The second rank is the Associate professor who has
+achieved tenure, but who lacks the publication/teaching/committee
+record to achieve the level of full professor. The final rank is Full professor,
+which is the apex of the promotion ladder.
+
+To formalize the description above, we define $\bm{n^r}$ as the number of professors
+at a given rank, where rank $1$ represents an Assistant professor and rank $3$ represents
+a Full professor. The number $\bm{n^r}$ is equal to the sum of male $\bm{n_m^r}$ and
+female $\bm{n_f^r}$ professors at that rank, in the department. At any given rank,
+the number of professors is equal to:
+\begin{align}
+  n^1 & = n^1_f + n^1_m \label{eq:dept-size-1} \\
+  n^2 & = n^2_f + n^2_m  \label{eq:dept-size-2} \\
+  n^3 & = n^3_f + n^3_m \label{eq:dept-size-3}
+\end{align}
+
+The total size of the department ($\bm{N}$) is equal to the number of professors at
+each rank:
+
+\begin{equation}
+  \label{eq:total-dept-size}
+  N = n^1 + n^2 + n^3
+\end{equation}
+
+By substituting equations
+\ref{eq:dept-size-1}, \ref{eq:dept-size-2}, and \ref{eq:dept-size-3} into equation \ref{eq:total-dept-size} we obtain a
+gendered version of department size equation where the number of males in the
+department is $\bm{n_m}$, and the number of females in the department is $\bm{n_f}$:
+
+\begin{align}
+  n_m &= n^1_m + n^2_m + n^3_m  \label{eq:female-number} \\
+  n_f &= n^1_f + n^2_f + n^3_f  \label{eq:male-number} \\
+  N &= n_f + n_m  \label{eq:total-gender-dept-size}
+\end{align}
+
+Our intent in this project is to study the evolution of department gender balance
+over time, meaning the balance of male and female faculty. To measure this
+balance we use a elementary metric: The percentage of female
+faculty, as derived from equations \ref{eq:female-number} and \ref{eq:total-gender-dept-size}. 
+
+\begin{align}
+  \label{eq:pct-female}
+  \text{Percentage of female faculty} &= \frac{n_f}{N} \label{eq:pct-female} \\
+  \text{Percentage of male faculty} &= 1 - \frac{n_f}{N}          
+\end{align}
+
+As the department undergoes yearly faculty changes and turnover--as described in
+the section below--we track how these simulated changes will affect the
+percentage of female faculty in the department. This percentage also informs our
+analysis as to the potential for achieving reasonable gender equity--in faculty
+composition--given current university gender diversity enhancement policies.
+
+\subsection{Department Dynamics}
+\label{sec:dept-dynamics}
+
+Of course the department's membership and faculty composition does not remain
+constant over time. Every year faculty leave due to retirement or
+job offers from other universities. New faculty join the department through a
+hiring process. A more appropriate way to write the equations above is to
+include a reference to a given timestep. In other words, we could write equation
+\ref{eq:total-dept-size} with an explicit reference to time as below:
+
+\begin{equation*}
+  N(t) = n^1(t) + n^2(t) + n^3(t) \label{eq:test}
+\end{equation*}
+
+The discussion on time naturally leads to an explanation for the dynamics of the
+model. We envision three steady-state processes of entry and exit. The three processes include:
+attrition, hiring, and promotion. The equations are a recursive definition of
+the number of male and female professors at each rank at time $t+1$, based upon
+changes occurring at time $t$. The equations below define a system of discrete
+linear difference equations. 
+
+
+\begin{align} 
+  n^1_f(t+1) &= n^1_f(t) - a^1_f(t) + h^1_f(t) - b^{1,2}_f(t)  \label{eq:nf1} \\
+  n^1_m(t+1) &= n^1_m(t) - a^1_m(t) + h^1_m(t) - b^{1,2}_m(t) \label{eq:nm1} \\
+  n^2_f(t+1) &= n^2_f(t) - a^2_f(t) + h^2_f(t) - b^{2,3}_f(t) + p^{1,2}_f(t) \label{eq:nf2} \\ 
+  n^2_m(t+1) &= n^2_m(t) - a^2_m(t) + h^2_m(t) - b^{2,3}_m(t) + p^{1,2}_m(t)  \label{eq:nm2} \\ 
+  n^3_f(t+1) &= n^3_f(t) - a^3_f(t) + h^3_f(t) + b^{2,3}_f(t) \label{eq:nf3} \\
+  n^3_m(t+1) &= n^3_m(t) - a^3_m(t) + h^3_m(t) + b^{2,3}_m(t) \label{eq:nm3}
+\end{align}
+
+In equations \ref{eq:nf1}-\ref{eq:nm3} above, the $\bm{a^r_g}$ term refer to the number of professor
+attritions in year $t$, while the $\bm{h^r_g}$ term refers to the number of
+professor hires. The $\bm{b^{r, r+1}}$ terms refer to promotions between
+professor levels. As per the equations, the number of professors promoted from a
+given rank will augment the faculty numbers of the higher rank and decrement the
+faculty numbers of their current rank. Further, professors cannot be promoted
+into the Assistant professor rank and cannot be promoted beyond the Full
+professor rank for obvious reasons. 
+
+Next we refine equations \ref{eq:nf1}-\ref{eq:nm3} by modeling the calculation of
+attrition, hiring, and promotions. In modeling each of these processes, we also
+explain how factors like department growth targets and exogenous faculty churn
+also affect department faculty numbers and gender balance. 
+
+\subsubsection{Attrition Process($a^r$)}
+\label{sec:attrition}
+
+As professors retire from the department or leave due to new opportunities, the
+department size will fall. These departures occur at all ranks, though most
+attrition occurs at the full professor level--since this group represents the
+largest group of professors in the department. The downward increment in
+department size at a given rank and gender is denoted $\bm{a^r_g}$. The number
+of attritions $a^r_g \in \zp$ at a given rank and gender are defined by the
+following system of equations.
+
+\begin{align}
+  a^1_f(t) &= \binomial{n^1_f(t)}{p^{1, attr}_f} + \binomial{cn^1_f(t)}{\frac{n^1_f(t)}{N(t)}}  \label{eq:attr_f1}\\
+  a^1_m(t) &= \binomial{n^1_m(t)}{p^{1, attr}_m} + \binomial{cn^1_m(t)}{\frac{n^1_m(t)}{N(t)}} \label{eq:attr_m1} \\
+  a^2_f(t) &= \binomial{n^2_f(t)}{p^{2, attr}_f} + \binomial{cn^2_f(t)}{\frac{n^2_f(t)}{N(t)}} \label{eq:attr_f2} \\
+  a^2_m(t) &= \binomial{n^2_m(t)}{p^{2, attr}_m} + \binomial{cn^2_m(t)}{\frac{n^2_m(t)}{N(t)}} \label{eq:attr_m2} \\
+  a^3_f(t) &= \binomial{n^3_f(t)}{p^{3, attr}_f} + \binomial{cn^3_f(t)}{\frac{n^3_f(t)}{N(t)}} \label{eq:attr_f3} \\
+  a^3_m(t) &= \binomial{n^3_m(t)}{p^{3, attr}_m} + \binomial{cn^3_m(t)}{\frac{n^3_m(t)}{N(t)}} \label{eq:attr_m3} 
+\end{align}
+
+The first time in equation is the structural number of attritions. Since
+attritions must be integers, we use a Binomial distribution which determines the
+number of successes in a given number of trials. The benefit of using a
+probability distribution is that it adds a stochastic character to the model
+outcomes. We use the empirically determined attrition rate for each rank and
+group $\bm{p^{r,attr}_g}$, in each binomial distribution. Notably, the attrition
+rates do not sum to one, otherwise there would an unrealistic level of attrition
+each year.
+
+The second term represents random churn or turnover in the department. In some
+years, there may be more or less attritions than expected. This term modulates
+additional stochasticity to evaluate how perturbations affect the stability of
+the system's outputs. The level of churn is determined with regard to the
+overall department size. Hence the adjustable parameter $\bm{c}$ represents the
+fraction of the department that is susceptible to random churn, for example 5 or 10
+percent. $N$ represents the size of the entire department and the distribution
+of the additional stochasticity is proportional to the fraction of the
+department size that each group constitutes. 
+
+\subsubsection{Hiring Process ($h^r_g$)}
+\label{sec:hiring}
+
+The hiring process also must produce an integer number of hires, and hence
+relies on a binomial process as well.
+
+
+\begin{align}
+  h^1_f(t) &= \binomial{A(t) + cn^1_f(t) + gN(t)}{p^{1, hiring}_f}  \label{eq:hiring_f1}\\
+  h^1_m(t) &= \binomial{A(t) + cn^1_m(t) + gN(t)}{p^{1, hiring}_m}  \label{eq:hiring_m1}\\
+  h^2_f(t) &= \binomial{A(t) + cn^2_f(t) + gN(t)}{p^{2, hiring}_f}  \label{eq:hiring_f2}\\
+  h^2_m(t) &= \binomial{A(t) + cn^2_m(t) + gN(t)}{p^{2, hiring}_m}  \label{eq:hiring_m2}\\
+  h^3_f(t) &= \binomial{A(t) + cn^3_f(t) + gN(t)}{p^{3, hiring}_f}  \label{eq:hiring_f3}\\
+  h^3_m(t) &= \binomial{A(t) + cn^3_m(t) + gN(t)}{p^{3, hiring}_m}  \label{eq:hiring_m3}\\
+  &\sum_{r \in R}\sum_{g \in G}p_g^{r, hiring} = 1 \label{eq:hiring_constraint}
+\end{align}
+
+The first term in the the equations \ref{eq:hiring_f1}-\ref{eq:hiring_m3} is the
+total number of attritions in the department $A$. The first task of the hiring
+process is to fill any voids left by the departures of professors. The second
+term in the hiring equation is again a churn term, to model any additional
+volatility or stochasticity in the number of possible hires in a given year. The
+final term is a growth term $gN(t)$, as departments tend to grow or shrink in
+size over time, given prevailing university investments and budgeting
+priorities. The $g$ in the equation is the growth rate for the department. The
+growth rate times the department size indicates the number of additional
+professors to hire in excess of any attritions that need filling. This term
+$gN(t)$ must be rounded to the nearest integer value.
+
+The hiring rates $p^{r, hiring}_g$ reflect the tendency for the department to
+hire most professors at the Assistant professor level, though the majority of
+attritions occur at the Full professor level. This aspect of the model mirrors
+the actual hiring processes in most academic departments.
+
+One aspects of the hiring equations bear some explanation. In each equation the
+total attrition term is the same, namely $A$. While this may seem like the
+equation hires $A$ number of individuals at each level, this is not the case.
+Because the hiring rates are different by group, and these rates sum to $1$, the
+total number of hires is equal to $A$--independent of any contribution from the
+churn and growth terms. These hires are simply peppered over the levels
+commensurate with the hiring rates for each group and level. The hires
+associated with churn and growth are similarly distributed over the department
+groups. 
+
+\subsubsection{Promotion Process($b^r_g$)}
+\label{sec:promotion}
+
+The promotion process simply redistributes professors between levels instead of
+adding or removing professors from the department. The promotion process simply
+promotes a certain fraction of professors at the Assistant or Associate levels
+to the their respective increments in each year.
+
+\begin{align}
+  b^1_f(t) &= \binomial{n^1_f(t)}{p^{1,2}_f}  \label{eq:attr_f1}\\
+  b^1_m(t) &= \binomial{n^1_m(t)}{p^{1, 2}_m}  \label{eq:attr_m1} \\
+  b^2_f(t) &= \binomial{n^2_f(t)}{p^{2, 3}_f}  \label{eq:attr_f2} \\
+  b^2_m(t) &= \binomial{n^2_m(t)}{p^{2, 3}_m}  \label{eq:attr_m2}
+\end{align}
+
+
+\section{Differences Between New Model and Previous Model}
+\label{sec:differences}
+
+The formulation of the current model resolves some issues and inconsistencies in
+the previous model. In this section we identify the differences between the
+current models and the previous model. The governing system of linear difference
+equations \ref{eq:nf1}-\ref{eq:nm3} on page \pageref{eq:nf1} have not changed
+between models. The same processes of attrition, hiring, and promotion
+contribute to the dynamics of the model as before.
+
+These differences between models cluster around the way that the churn and
+growth processes are included in the model. In the original model, the a single
+churn variable captured both hiring and attrition. That variable took states of
+$-1, 0, 1$, where $-1$ roughly represented one extra attrition and $+1$
+represented roughly one additional hire. However this formulation led to an unintended
+coupling between the attrition and hiring processes, a coupling that is not
+reflective of the actual processes in an academic department. The new model
+introduces a separate churn term for the attrition process and a separate churn
+term for the hiring process. Both churn terms follow the same distribution, but
+in opposite directions. Hence as long as the sum of both terms averages to zero,
+the churn processes add no bias or drift to the model.
+
+The second change is the decoupling of the growth process from the churn
+process. In the previous model the number of additional FTEs due to growth was
+added to the number of FTE changes due to the churn process. This had the
+unintended consequence of coupling growth to both the attrition and hiring
+processes as well. While a correlation between hiring and growth is
+unavoidable--since both processes add professors to the department, the
+correlation with attrition was unintended. The new model removes this coupling. 
+
+
+
+%----------------------------------------------------------------------------------------
+%	BIBLIOGRAPHY
+%----------------------------------------------------------------------------------------
+
+\renewcommand{\refname}{\spacedlowsmallcaps{References}} 
+
+\bibliographystyle{unsrt}
+
+\bibliography{/home/krishnab/Dropbox/bibtex/library.bib}
+
+%----------------------------------------------------------------------------------------
+\end{document}
