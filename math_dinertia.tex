@@ -1,14 +1,16 @@
 
+
 \documentclass[12pt, a4paper, oneside, headinclude, footinclude,english]{article}
 
 \input{/home/krishnab/Dropbox/backup/templates/latex/math_notes/structure.tex}
 \input{/home/krishnab/Dropbox/backup/templates/latex/math_macros/math_macros.tex}
+
 \title{\normalfont\spacedallcaps{Mathematical Model for Demographic Inertia in
     Faculty Hiring}}
 
 \author{\spacedlowsmallcaps{Krishna Bhogaonker}} 
  
-\date{\today\\version 0.1}
+\date{\today\\version 0.2}
 \makeatletter
 %\providecommand{\@nil}
 \makeatother
@@ -45,7 +47,7 @@
 
 The past few decades have witnessed substantial improvements in the gender
 diversity of newly minted Ph.Ds from top universities. At the same time, the
-gender diversity of the faculty in these same universities has not changed to
+gender diversity of faculty in these same universities does not
 reflect this change in candidate supply. The model developed below examines the
 change in faculty gender diversity over time, given as set of initial conditions
 and model parameters. 
@@ -106,21 +108,12 @@ balance using our evaluation metric.
 \subsection{Academic Department Composition and Structure}
 \label{sec:dept-structure}
 
-An academic department is composed of both male and female faculty that teach
-and conduct research in a specific discipline. Each professor has a rank
-contingent on his/her position within the department's status ladder. The most junior rank
-is the Assistant professor who is a tenure-track candidate, but who has not yet
-achieved tenure. In most cases tenure takes about 6 years from the initial hire
-date of the professor. The second rank is the Associate professor who has
-achieved tenure, but who lacks the publication/teaching/committee
-record to achieve the level of full professor. The final rank is Full professor,
-which is the apex of the promotion ladder.
+An academic department is composed of faculty who teach
+and conduct research in a specific discipline. All professors hold a position on the academic career ladder.  This typically includes three steps:  Assistant Professor, Associate Professor and Full Professor. The most junior rank is Assistant Professors who are tenure-track faculty, but not yet tenured. In many departments, tenure decisions are made six or seven years after the initial hire date. The second rank is Associate Professors who have been awarded tenure or promoted from Assistant Professor without tenure. The final rank is Full Professors whose position resides at the apex of the promotion ladder.
 
 To formalize the description above, we define $\bm{n^r}$ as the number of professors
-at a given rank, where rank $1$ represents an Assistant professor and rank $3$ represents
-a Full professor. The number $\bm{n^r}$ is equal to the sum of male $\bm{n_m^r}$ and
-female $\bm{n_f^r}$ professors at that rank, in the department. At any given rank,
-the number of professors is equal to:
+at a given rank, where rank $1$ represents an assistant professor and rank $3$ represents
+a full professor. The number $\bm{n^r}$ is equal to the sum of women $\bm{n_f^r}$  and men $\bm{n_m^r}$ who are professors at that rank. At any given rank, the number of professors is equal to:
 \begin{align}
   n^1 & = n^1_f + n^1_m \label{eq:dept-size-1} \\
   n^2 & = n^2_f + n^2_m  \label{eq:dept-size-2} \\
@@ -136,9 +129,7 @@ each rank:
 \end{equation}
 
 By substituting equations
-\ref{eq:dept-size-1}, \ref{eq:dept-size-2}, and \ref{eq:dept-size-3} into equation \ref{eq:total-dept-size} we obtain a
-gendered version of department size equation where the number of males in the
-department is $\bm{n_m}$, and the number of females in the department is $\bm{n_f}$:
+\ref{eq:dept-size-1}, \ref{eq:dept-size-2}, and \ref{eq:dept-size-3} into equation \ref{eq:total-dept-size} we obtain a gendered version of department size equation where the number of women in the department is $\bm{n_f}$ and the number of men is $\bm{n_m}$:
 
 \begin{align}
   n_m &= n^1_m + n^2_m + n^3_m  \label{eq:female-number} \\
@@ -146,44 +137,30 @@ department is $\bm{n_m}$, and the number of females in the department is $\bm{n_
   N &= n_f + n_m  \label{eq:total-gender-dept-size}
 \end{align}
 
-Our intent in this project is to study the evolution of department gender balance
-over time, meaning the balance of male and female faculty. To measure this
-balance we use a elementary metric: The percentage of female
-faculty, as derived from equations \ref{eq:female-number} and \ref{eq:total-gender-dept-size}. 
+This project explores how the proportion of  faculty who are women and men changes over time.  To measure this balance we use the proportions derived from equations \ref{eq:female-number} and \ref{eq:total-gender-dept-size}. 
 
 \begin{align}
   \label{eq:pct-female}
-  \text{Percentage of female faculty} &= \frac{n_f}{N} \label{eq:pct-female} \\
-  \text{Percentage of male faculty} &= 1 - \frac{n_f}{N}          
+  \text{Proportion of women faculty} &= \frac{n_f}{N} \label{eq:pct-female} \\
+  \text{Proportion of men faculty} &= 1 - \frac{n_f}{N}          
 \end{align}
-
-As the department undergoes yearly faculty changes and turnover--as described in
-the section below--we track how these simulated changes will affect the
-percentage of female faculty in the department. This percentage also informs our
-analysis as to the potential for achieving reasonable gender equity--in faculty
-composition--given current university gender diversity enhancement policies.
 
 \subsection{Department Dynamics}
 \label{sec:dept-dynamics}
 
-Of course the department's membership and faculty composition does not remain
-constant over time. Every year faculty leave due to retirement or
-job offers from other universities. New faculty join the department through a
-hiring process. A more appropriate way to write the equations above is to
-include a reference to a given timestep. In other words, we could write equation
-\ref{eq:total-dept-size} with an explicit reference to time as below:
+Department size changes yearly through attrition, promotions and hiring. We begin with the department's actual historical rates of attrition, promotion and hiring and then track how these rates affect the proportion of women faculty over time. The simulation also provides a tool for assessing how changes in the rates of attrition, promotion and hiring influence this outcome.
+
+In order to account for the passage of time, we include time, defined as the sequence of years, beginning with each academic year.  All changes in department size occur after the beginning of time $t$ and before the beginning of time $t+1$. In other words:
 
 \begin{equation*}
   N(t) = n^1(t) + n^2(t) + n^3(t) \label{eq:test}
 \end{equation*}
 
-The discussion on time naturally leads to an explanation for the dynamics of the
-model. We envision three steady-state processes of entry and exit. The three processes include:
-attrition, hiring, and promotion. The equations are a recursive definition of
-the number of male and female professors at each rank at time $t+1$, based upon
-changes occurring at time $t$. The equations below define a system of discrete
+The simulation projects change through three steady-state processes of entry and exit:
+attrition, hiring, and promotion. Yearly changes occur after the beginning of time $t$ and before the beginning of time $t+1$.  The equations are a recursive definition of
+the number of women and men who are professors at each rank at time $t+1$, based on
+changes occurring after the beginning of time $t$. The equations below define a system of discrete
 linear difference equations. 
-
 
 \begin{align} 
   n^1_f(t+1) &= n^1_f(t) - a^1_f(t) + h^1_f(t) - b^{1,2}_f(t)  \label{eq:nf1} \\
@@ -194,7 +171,7 @@ linear difference equations.
   n^3_m(t+1) &= n^3_m(t) - a^3_m(t) + h^3_m(t) + b^{2,3}_m(t) \label{eq:nm3}
 \end{align}
 
-In equations \ref{eq:nf1}-\ref{eq:nm3} above, the $\bm{a^r_g}$ term refer to the number of professor
+[EDIT AFTER REVISIONS TO PARAMETER NAMES]. In equations \ref{eq:nf1}-\ref{eq:nm3} above, the $\bm{a^r_g}$ term refer to the number of professor
 attritions in year $t$, while the $\bm{h^r_g}$ term refers to the number of
 professor hires. The $\bm{b^{r, r+1}}$ terms refer to promotions between
 professor levels. As per the equations, the number of professors promoted from a
@@ -228,8 +205,8 @@ following system of equations.
   a^3_m(t) &= \binomial{n^3_m(t)}{p^{3, attr}_m} + \binomial{cn^3_m(t)}{\frac{n^3_m(t)}{N(t)}} \label{eq:attr_m3} 
 \end{align}
 
-The first time in equation is the structural number of attritions. Since
-attritions must be integers, we use a Binomial distribution which determines the
+The first term in each equation is the structural [expected?] number of attritions, given the attrition rate. Since
+attritions must be integers, we use a binomial distribution [IS BINOMIAL A PROPER NOUN, i.e. should it be capitalized?)], which determines the
 number of successes in a given number of trials. The benefit of using a
 probability distribution is that it adds a stochastic character to the model
 outcomes. We use the empirically determined attrition rate for each rank and
@@ -237,10 +214,7 @@ group $\bm{p^{r,attr}_g}$, in each binomial distribution. Notably, the attrition
 rates do not sum to one, otherwise there would an unrealistic level of attrition
 each year.
 
-The second term represents random churn or turnover in the department. In some
-years, there may be more or less attritions than expected. This term modulates
-additional stochasticity to evaluate how perturbations affect the stability of
-the system's outputs. The level of churn is determined with regard to the
+The second term represents unexpected attrition in the department beyond what is projected given the attrition rate. This term modulates additional stochasticity to evaluate how perturbations affect the stability of the system's outputs. The level of churn is determined with regard to the
 overall department size. Hence the adjustable parameter $\bm{c}$ represents the
 fraction of the department that is susceptible to random churn, for example 5 or 10
 percent. $N$ represents the size of the entire department and the distribution
@@ -250,8 +224,8 @@ department size that each group constitutes.
 \subsubsection{Hiring Process ($h^r_g$)}
 \label{sec:hiring}
 
-The hiring process also must produce an integer number of hires, and hence
-relies on a binomial process as well.
+The hiring process also must produce an integer number of hires, and hence also
+relies on a binomial process.
 
 
 \begin{align}
